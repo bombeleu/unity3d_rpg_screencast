@@ -6,6 +6,7 @@ public class PlayerControls : MonoBehaviour {
 	public float moveSpeed = 10;
 	public Animator animator;
 	public Direction direction = Direction.Down;
+	public bool walking = false;
 
 	// Use this for initialization
 	void Start () {
@@ -16,45 +17,34 @@ public class PlayerControls : MonoBehaviour {
 	void Update () {
 
 		Vector2 movement = Vector2.zero;
-		string animationClip = "CharacterIdleDown";
 
 		float h = Input.GetAxis("Horizontal");
 		float v = Input.GetAxis("Vertical");
+		walking = false;
 
 		if (Input.GetButton("Horizontal")) {
 			movement.x = h;
+			walking = true;
 
 			if (h < 0) {
-				animationClip = "CharacterWalkLeft";
 				direction = Direction.Left;
 			} else {
-				animationClip = "CharacterWalkRight";
 				direction = Direction.Right;
 			}
 
 		} else if (Input.GetButton("Vertical")) {
 			movement.y = v;
+			walking = true;
 
 			if (v < 0) {
-				animationClip = "CharacterWalkDown";
 				direction = Direction.Down;
 			} else {
-				animationClip = "CharacterWalkUp";
 				direction = Direction.Up;
-			}
-		} else {
-			if (direction == Direction.Left) {
-				animationClip = "CharacterIdleLeft";
-			} else if (direction == Direction.Right) {
-				animationClip = "CharacterIdleRight";
-			} else if (direction == Direction.Up) {
-				animationClip = "CharacterIdleUp";
-			} else if (direction == Direction.Down) {
-				animationClip = "CharacterIdleDown";
 			}
 		}
 
-		animator.Play(animationClip);
+		animator.SetBool("Walking", walking);
+		animator.SetInteger("Direction", (int) direction);
 
 		transform.Translate(movement * moveSpeed * Time.deltaTime);
 	
